@@ -1,16 +1,15 @@
 const Hapi = require("@hapi/hapi");
+const books = require("./books");
 const { nanoid } = require("nanoid");
 const server = Hapi.server({
   port: 9000,
   host: "localhost",
 });
 
-const books = [];
-
 //tambah buku
 server.route({
   method: "POST",
-  path: "/add-book",
+  path: "/books",
   handler: (request, h) => {
     const {
       name,
@@ -76,7 +75,7 @@ server.route({
 //lihat buku
 server.route({
   method: "GET",
-  path: "/book",
+  path: "/books",
   handler: (request, h) => {
     const { name, reading, finished } = request.query;
 
@@ -119,7 +118,7 @@ server.route({
 //lihat detail buku
 server.route({
   method: "GET",
-  path: "/book/{id}",
+  path: "/books/{bookid}",
   handler: (request, h) => {
     const { id } = request.params;
     const selectedBook = books.find((book) => book.id === id);
@@ -144,7 +143,7 @@ server.route({
 //edit buku
 server.route({
   method: "PUT",
-  path: "/book/{id}",
+  path: "/books/{bookId}",
   handler: (request, h) => {
     const { id } = request.params;
     const {
@@ -188,7 +187,7 @@ server.route({
 //hapus buku
 server.route({
   method: "DELETE",
-  path: "/book/{id}",
+  path: "/books/{bookId}",
   handler: (request, h) => {
     const { id } = request.params;
     const selectedBook = books.find((book) => book.id === id);
