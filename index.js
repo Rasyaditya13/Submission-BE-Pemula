@@ -118,10 +118,10 @@ server.route({
 //lihat detail buku
 server.route({
   method: "GET",
-  path: "/books/{bookid}",
+  path: "/books/{bookId}",
   handler: (request, h) => {
-    const { id } = request.params;
-    const selectedBook = books.find((book) => book.id === id);
+    const { bookId } = request.params;
+    const selectedBook = books.find((book) => book.id === bookId);
     if (selectedBook !== undefined) {
       return {
         status: "success",
@@ -145,7 +145,7 @@ server.route({
   method: "PUT",
   path: "/books/{bookId}",
   handler: (request, h) => {
-    const { id } = request.params;
+    const { bookId } = request.params;
     const {
       name,
       year,
@@ -156,8 +156,28 @@ server.route({
       readPage,
       reading,
     } = request.payload;
+
+    if (!name) {
+      return h
+        .response({
+          status: "fail",
+          message: "Gagal memperbarui buku. Mohon isi nama buku",
+        })
+        .code(400);
+    }
+
+    if (readPage > pageCount) {
+      return h
+        .response({
+          status: "fail",
+          message:
+            "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
+        })
+        .code(400);
+    }
+
     const timeStamp = new Date().toISOString();
-    const selectedBook = books.find((book) => book.id === id);
+    const selectedBook = books.find((book) => book.id === bookId);
     if (selectedBook !== undefined) {
       selectedBook.name = name;
       selectedBook.year = year;
@@ -189,8 +209,8 @@ server.route({
   method: "DELETE",
   path: "/books/{bookId}",
   handler: (request, h) => {
-    const { id } = request.params;
-    const selectedBook = books.find((book) => book.id === id);
+    const { bookId } = request.params;
+    const selectedBook = books.find((book) => book.id === bookId);
     if (selectedBook !== undefined) {
       books.splice(books.indexOf(selectedBook), 1);
       return h
